@@ -4,11 +4,11 @@
 
 Currently includes R files used to analyse outputs from SimPaths, an existing microsimulation model, after it was used to model UBI effects on mental health in UK working-age adults.
 
-The SimPaths code is available on GitHub (link tbc) and a technical description of the model is available here: (link tbc)
+Currently, an early version of the SimPaths code is available on GitHub (https://github.com/jasmineRepo/LABSim) and a technical description of the model is available here: https://www.microsimulation.ac.uk/publications/publication-557738/.
 
 Data to run the files are not freely available as the SimPaths population at the time of modelling was based on real-world data from Understanding Society (https://ukdataservice.ac.uk/deposit-data/understanding-society/). However, the files could be adapted to run on any outputs from SimPaths.
 
-Permissions to access SimPaths can be requested here: (link tbc)
+Permissions to access SimPaths will be made available in future and the link will be posted here.
 
 PREPARATORY FILES
 
