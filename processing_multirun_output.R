@@ -32,7 +32,7 @@ data.table::getDTthreads()
 data.table::setDTthreads(8)
 
 # a list of variables in the main table
-main_out_colnames =  c('les_c4', 'out_ghqcase',
+main_out_colnames =  c('les_c4', 'out_ghqcase', 'dhm',
                        'equivalisedDisposableIncomeYearly', 'atRiskOfPoverty', 
                        'labourSupplyWeekly')
 
@@ -52,6 +52,7 @@ subgroup_loop <- function(sid_, dft) {
 
 rename_final_columns <- function(data_table_name, postfix) {
   names(data_table_name)[names(data_table_name) == 'out_ghqcase'] <- paste("out_ghqcase", postfix, sep="_")
+  names(data_table_name)[names(data_table_name) == 'dhm'] <- paste("dhm", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'les_c4'] <- paste("out_emp", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'labourSupplyWeekly'] <- paste("out_emphrs", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'equivalisedDisposableIncomeYearly'] <- paste("out_income", postfix, sep="_")
@@ -65,6 +66,7 @@ rename_final_columns <- function(data_table_name, postfix) {
 
 rename_subgroup_final_columns <- function(data_table_name, postfix) {
   names(data_table_name)[names(data_table_name) == 'out_ghqcase'] <- paste("out_ghqcase", postfix, sep="_")
+  names(data_table_name)[names(data_table_name) == 'dhm'] <- paste("dhm", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'les_c4'] <- paste("out_emp", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'labourSupplyWeekly'] <- paste("out_emphrs", postfix, sep="_")
   names(data_table_name)[names(data_table_name) == 'equivalisedDisposableIncomeYearly'] <- paste("out_income", postfix, sep="_")
@@ -146,7 +148,7 @@ for (aid in analysis_id) {
     cols <- c(
       'id_Person', 'household_status',
       'id_benefitUnit', 'run', 'dag', 'dgn', 'deh_c3', 'time',
-      'dhm_ghq', 'les_c4', 'labourSupplyWeekly')
+      'dhm_ghq', 'dhm', 'les_c4', 'labourSupplyWeekly')
         file <- laf_open(detect_dm_csv(path, header = TRUE))
     person <- as.data.table(file[, cols])
     gc()

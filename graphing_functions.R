@@ -23,22 +23,22 @@ graph_policy_comparisons <-
            y_lab = "",
            agg_method = median,
            ci_geom = c("ribbon", "errorbar", "linerange", "crossbar")) {
-
+    
     ci_geom <- match.arg(ci_geom)
-
+    
     require(ggplot2)
     require(SPHSUgraphs)
     require(dplyr)
     require(tidyr)
-
+    
     # agg_method <- match.arg(agg_method)
-
+    
     baseline_var <- enquo(baseline_var)
     comparison_var <- enquo(comparison_var)
     comparison_var2 <- enquo(comparison_var2)
     comparison_var3 <- enquo(comparison_var3)
     group_var <- enquo(group_var)
-
+    
     .data |>
       filter(!!group_var, !is.na(run)) |>
       select(run, time, !!baseline_var, !!comparison_var, !!comparison_var2, !!comparison_var3) |>
@@ -55,37 +55,34 @@ graph_policy_comparisons <-
           labels = c("Baseline", "Partial UBI", "Full UBI", "Full+ UBI")
         )
       ) |>
-      ggplot(aes(time, val, colour = case, fill = case)) +
+      ggplot(aes(time, val, colour = case, fill = case, shape = case)) +
       geom_vline(xintercept = 2023, linetype = "dashed",
                  colour = "red") +
       {if (ci_geom == "ribbon") {
         stat_summary(
-        fun.data = median_hilow,
-        geom = "ribbon",
-        alpha = 0.5,
-        colour = NA)
+          fun.data = median_hilow,
+          geom = "ribbon",
+          alpha = 0.5,
+          colour = NA)
       } else {
         stat_summary(
-        fun.data = median_hilow,
-        geom = ci_geom,
-        width = 0.2,
-        size = 1)
+          fun.data = median_hilow,
+          geom = ci_geom,
+          width = 0.2
+        )
       }} +
       stat_summary(fun = agg_method, geom = "line") +
-      stat_summary(fun = agg_method, geom = "point") +
-      scale_fill_manual(
-        "Policy:",
-        aesthetics = c("fill", "colour"),
-        values = sphsu_cols("Thistle", "University Blue", "Rust", "Leaf", names = FALSE)
-      ) +
-      scale_linetype("") +
+      stat_summary(fun = agg_method, geom = "point", size = 2.3, stroke = 0.8) +
+      scale_colour_manual("Policy:", aesthetics = c("fill", "colour"),
+                          values = c("#951272", "#284766", "#BE4D00", "#00843D")) +
+      scale_shape_manual("Policy:", values = c(20, 2, 0, 1)) +
       xlab("") +
       ylab(y_lab) +
       labs(
         caption = paste(
           "Notes:",
           "1000 simulation runs in each condition.",
-          "Red line denotes reform implementation point",
+          "Dashed red line denotes reform implementation point",
           sep = "\n"
         )
       ) +
@@ -97,7 +94,7 @@ graph_policy_comparisons <-
             axis.text.x=element_text(size=13),
             axis.title=element_text(size=14),
             legend.box.margin=margin(-25,-10,-10,-10))
-
+    
   }
 
 # two-group graphs
@@ -140,7 +137,7 @@ graph_policy_comparisons_2 <-
           labels = c("Baseline", "Partial UBI", "Full UBI", "Full+ UBI")
         )
       ) |>
-      ggplot(aes(time, val, colour = case, fill = case, linetype = !!group_var)) +
+      ggplot(aes(time, val, colour = case, fill = case, shape = case, linetype = !!group_var)) +
       geom_vline(xintercept = 2023, linetype = "dashed",
                  colour = "red") +
       {if (ci_geom == "ribbon") {
@@ -153,16 +150,12 @@ graph_policy_comparisons_2 <-
         stat_summary(
           fun.data = median_hilow,
           geom = ci_geom,
-          width = 0.2,
-          size = 1)
+          width = 0.2)
       }} +
       stat_summary(fun = agg_method, geom = "line") +
-      stat_summary(fun = agg_method, geom = "point") +
-      scale_fill_manual(
-        "Policy:",
-        aesthetics = c("fill", "colour"),
-        values = sphsu_cols("Thistle", "Leaf", names = FALSE)
-      ) +
+      stat_summary(fun = agg_method, geom = "point", size = 2.3, stroke = 0.8) +
+      scale_colour_manual("Policy:", aesthetics = c("fill", "colour"), values = c("#951272", "#00843D")) +
+      scale_shape_manual("Policy:", values = c(20, 1)) +
       scale_linetype("") +
       xlab("") +
       ylab(y_lab) +
@@ -170,7 +163,7 @@ graph_policy_comparisons_2 <-
         caption = paste(
           "Notes:",
           "1000 simulation runs in each condition.",
-          "Red line denotes reform implementation point",
+          "Dashed red line denotes reform implementation point",
           sep = "\n"
         )
       ) +

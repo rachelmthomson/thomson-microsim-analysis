@@ -32,6 +32,9 @@ out_data <- out_data %>%
   mutate(out_diff_partial = (out_ghqcase_partial - out_ghqcase_baseline),
          `out_diff_full no bens` = (`out_ghqcase_full no bens` - out_ghqcase_baseline),
          `out_diff_full w bens` = (`out_ghqcase_full w bens` - out_ghqcase_baseline),
+         out_diffLIK_partial = (dhm_partial - dhm_baseline),
+         `out_diffLIK_full no bens` = (`dhm_full no bens` - dhm_baseline),
+         `out_diffLIK_full w bens` = (`dhm_full w bens` - dhm_baseline),
          out_diffRII_partial = (out_RII_partial - out_RII_baseline),
          `out_diffRII_full no bens` = (`out_RII_full no bens` - out_RII_baseline),
          `out_diffRII_full w bens` = (`out_RII_full w bens` - out_RII_baseline),
@@ -40,7 +43,17 @@ out_data <- out_data %>%
          `out_diffSII_full w bens` = (`out_SII_full w bens` - out_SII_baseline),
          out_diffemphrs_partial = (out_emphrs_partial - out_emphrs_baseline),
          `out_diffemphrs_full no bens` = (`out_emphrs_full no bens` - out_emphrs_baseline),
-         `out_diffemphrs_full w bens` = (`out_emphrs_full w bens` - out_emphrs_baseline))
+         `out_diffemphrs_full w bens` = (`out_emphrs_full w bens` - out_emphrs_baseline),
+         out_dhm_baseline = dhm_baseline,
+         out_dhm_partial = dhm_partial,
+         `out_dhm_full no bens` = `dhm_full no bens`,
+         `out_dhm_full w bens` = `dhm_full w bens`)
+
+out_data <- out_data %>%
+  select(-dhm_baseline,
+         -dhm_partial,
+         -(`dhm_full no bens`),
+         -(`dhm_full w bens`))
 
 grp_data <- out_data %>%
   mutate(
@@ -83,13 +96,13 @@ summary <- out_data |>
     ),
     variable = factor(
       variable,
-      levels = c("ghqcase", "diff", "RII", "diffRII", "SII", "diffSII", "medianinc", "poverty", "emp", "N", "emphrs", "diffemphrs"),
-      labels = c("GHQ caseness", "Effect", "RII", "RII effect", "SII", "SII effect", "Median income", "Poverty", "Employment", "N", "Hours worked", "Diff. hours worked")
+      levels = c("ghqcase", "diff", "dhm", "diffLIK", "RII", "diffRII", "SII", "diffSII", "medianinc", "poverty", "emp", "N", "emphrs", "diffemphrs"),
+      labels = c("GHQ caseness", "Effect", "GHQ likert", "Likert effect", "RII", "RII effect", "SII", "SII effect", "Median income", "Poverty", "Employment", "N", "Hours worked", "Diff. hours worked")
     )
   ) |>
   filter(!is.na(group)) |>
-  filter(variable %in% c("GHQ caseness", "Effect", "RII", "RII effect", "SII", "SII effect", "Median income", "Poverty", "Employment", "N", "Hours worked", "Diff. hours worked")) |>
-  filter(group == "All" | variable == "GHQ caseness" | variable == "Effect" | variable == "Employment" | variable == "N" | variable == "Hours worked" | variable == "Diff. hours worked") |>
+  filter(variable %in% c("GHQ caseness", "Effect", "GHQ likert", "Likert effect", "RII", "RII effect", "SII", "SII effect", "Median income", "Poverty", "Employment", "N", "Hours worked", "Diff. hours worked")) |>
+  #filter(group == "All" | variable == "GHQ caseness" | variable == "Effect" | variable == "Employment" | variable == "N" | variable == "Hours worked" | variable == "Diff. hours worked") |>
   # Generate the summary data
   group_by(scenario, group, variable, policy, time) |>
   summarise(
@@ -113,6 +126,7 @@ summary <- out_data |>
 bind_rows(
   summary %>% filter(group == "All") %>% filter(variable == "Median income" | variable == "Poverty" | variable == "Employment" | variable == "N") %>% arrange(scenario, group, variable, policy),
   summary %>% filter(group == "All") %>% filter(variable == "GHQ caseness" | variable == "Effect") %>% arrange(scenario, policy, variable),
+  summary %>% filter(group == "All") %>% filter(variable == "GHQ likert" | variable == "Likert effect") %>% arrange(scenario, policy, variable),
   summary %>% filter(group == "All") %>% filter(variable == "RII" | variable == "RII effect") %>% arrange(scenario, policy, variable),
   summary %>% filter(group == "All") %>% filter(variable == "SII" | variable == "SII effect") %>% arrange(scenario, policy, variable),
   summary %>% filter(group == "All") %>% filter(variable == "Hours worked" | variable == "Diff. hours worked") %>% arrange(scenario, policy, variable),
@@ -145,7 +159,7 @@ for (sid in scenario_id) {
       `out_ghqcase_full w bens`,
       grp_all,
       y_lab = "Prevalence of CMD (%)",
-      ci_geom = "errorbar") + ylim(15,22.5) # add this code if want to set upper/lower limit on y axis
+      ci_geom = "errorbar") + ylim(17,21.5) # add this code if want to set upper/lower limit on y axis
 } %>%
   ggplot_build()
   ggsave(file = paste0("plots/svgs/", sid, "/All.svg"),
@@ -164,7 +178,7 @@ for (sid in scenario_id) {
         `out_ghqcase_full w bens`,
         grp_all,
         y_lab = "Prevalence of CMD (%)",
-        ci_geom = "errorbar") + ylim(15,22.5) # add this code if want to set upper/lower limit on y axis
+        ci_geom = "errorbar") + ylim(17,21.5) # add this code if want to set upper/lower limit on y axis
   } %>%
     ggplot_build()
   ggsave(file = paste0("plots/pdfs/", sid, "/All.pdf"),
