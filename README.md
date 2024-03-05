@@ -1,6 +1,6 @@
 # Thomson microsimulation analysis
 
-*Analysis files for 2023 Thomson et al. paper using microsimulation to explore mental health effects of Universal Basic Income (UBI)*
+*Analysis files for 2024 Thomson et al. paper using microsimulation to explore mental health effects of Universal Basic Income (UBI)*
 
 Currently includes R files used to analyse outputs from SimPaths, an existing microsimulation model, after it was used to model UBI effects on mental health in UK working-age adults.
 
